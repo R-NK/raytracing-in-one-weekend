@@ -2,9 +2,8 @@ use std::f64::INFINITY;
 
 use hittable::{Hittable, HittableList};
 use math::random_double;
-use ray::Ray;
 use sphere::Sphere;
-use vec3::{Color, Point3, Vec3};
+use vec3::{Color, Point3};
 
 mod camera;
 mod hittable;
