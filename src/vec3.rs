@@ -3,6 +3,9 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub},
 };
 
+use crate::math::random_double;
+use crate::math::random_double_range;
+
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Vec3 {
     e: [f64; 3],
@@ -47,6 +50,35 @@ impl Vec3 {
 
     pub fn unit_vector(&self) -> Self {
         *self / self.length()
+    }
+
+    fn random() -> Self {
+        Self::new(random_double(), random_double(), random_double())
+    }
+
+    fn random_range(min: f64, max: f64) -> Self {
+        Self::new(
+            random_double_range(min, max),
+            random_double_range(min, max),
+            random_double_range(min, max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Self::random_range(-1.0, 1.0);
+            if p.length_squared() < 1.0 {
+                break p;
+            }
+        }
+    }
+
+    pub fn random_unit_vector() -> Self {
+        let a = random_double_range(0.0, 2.0 * std::f64::consts::PI);
+        let z = random_double_range(-1.0, 1.0);
+        let r = (1.0 - z * z).sqrt();
+
+        return Self::new(r * a.cos(), r * a.sin(), z);
     }
 }
 

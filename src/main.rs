@@ -2,9 +2,9 @@ use std::f64::INFINITY;
 
 use hittable::{Hittable, HittableList};
 use math::random_double;
-use rand::Rng;
+use ray::Ray;
 use sphere::Sphere;
-use vec3::{Color, Point3};
+use vec3::{Color, Point3, Vec3};
 
 mod camera;
 mod hittable;
@@ -14,9 +14,15 @@ mod ray;
 mod sphere;
 mod vec3;
 
-fn ray_color<T: Hittable>(r: &ray::Ray, world: &T) -> Color {
-    if let Some(rec) = world.hit(r, 0.0, INFINITY) {
-        return (rec.normal + Color::new(1.0, 1.0, 1.0)) * 0.5;
+fn ray_color<T: Hittable>(r: &ray::Ray, world: &T, depth: i32) -> Color {
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
+    }
+
+    if let Some(rec) = world.hit(r, 0.001, INFINITY) {
+        let target = rec.p + rec.normal + Vec3::random_unit_vector();
+
+        return ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1) * 0.5;
     }
 
     let unit_direction = r.direction().unit_vector();
@@ -30,8 +36,7 @@ fn main() {
     const IMAGE_WIDTH: i16 = 384;
     const IMAGE_HEIGHT: i16 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i16;
     const SAMPLES_PER_PIXEL: i32 = 10;
-
-    let mut rng = rand::thread_rng();
+    const MAX_DEPTH: i32 = 50;
 
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
@@ -46,10 +51,10 @@ fn main() {
         for i in 0..IMAGE_WIDTH {
             let mut pixel_color = Color::default();
             for _ in 0..SAMPLES_PER_PIXEL {
-                let u = (i as f64 + rng.gen::<f64>()) / (IMAGE_WIDTH - 1) as f64;
-                let v = (j as f64 + rng.gen::<f64>()) / (IMAGE_HEIGHT - 1) as f64;
+                let u = (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64;
+                let v = (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
                 let r = cam.get_ray(u, v);
-                pixel_color += ray_color(&r, &world);
+                pixel_color += ray_color(&r, &world, MAX_DEPTH);
             }
             print::write_color(pixel_color, SAMPLES_PER_PIXEL);
         }
