@@ -2,6 +2,7 @@ use std::f64::INFINITY;
 
 use hittable::{Hittable, HittableList};
 use math::random_double;
+use rand::Rng;
 use sphere::Sphere;
 use vec3::{Color, Point3};
 
@@ -28,7 +29,9 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i16 = 384;
     const IMAGE_HEIGHT: i16 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i16;
-    const SAMPLES_PER_PIXEL: i32 = 100;
+    const SAMPLES_PER_PIXEL: i32 = 10;
+
+    let mut rng = rand::thread_rng();
 
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
@@ -43,8 +46,8 @@ fn main() {
         for i in 0..IMAGE_WIDTH {
             let mut pixel_color = Color::default();
             for _ in 0..SAMPLES_PER_PIXEL {
-                let u = (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64;
-                let v = (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
+                let u = (i as f64 + rng.gen::<f64>()) / (IMAGE_WIDTH - 1) as f64;
+                let v = (j as f64 + rng.gen::<f64>()) / (IMAGE_HEIGHT - 1) as f64;
                 let r = cam.get_ray(u, v);
                 pixel_color += ray_color(&r, &world);
             }
