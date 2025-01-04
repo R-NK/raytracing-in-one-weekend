@@ -4,9 +4,8 @@ use hittable::{Hittable, HittableList};
 use lambertian::Lambertian;
 use math::random_double;
 use metal::Metal;
-use ray::Ray;
 use sphere::Sphere;
-use vec3::{Color, Point3, Vec3};
+use vec3::{Color, Point3};
 
 mod camera;
 mod hittable;
@@ -61,12 +60,12 @@ fn main() {
     world.add(Box::new(Sphere::new(
         Point3::new(1.0, 0.0, -1.0),
         0.5,
-        Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2))),
+        Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0)),
     )));
     world.add(Box::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
-        Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8))),
+        Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3)),
     )));
 
     let cam = camera::Camera::default();
