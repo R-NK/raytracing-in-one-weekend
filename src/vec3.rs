@@ -52,6 +52,10 @@ impl Vec3 {
         *self / self.length()
     }
 
+    pub fn reflect(&self, n: Self) -> Self {
+        *self - n * self.dot(n) * 2.0
+    }
+
     fn random() -> Self {
         Self::new(random_double(), random_double(), random_double())
     }

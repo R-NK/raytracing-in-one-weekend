@@ -1,14 +1,19 @@
-use std::f64::INFINITY;
+use std::{f64::INFINITY, rc::Rc};
 
 use hittable::{Hittable, HittableList};
+use lambertian::Lambertian;
 use math::random_double;
+use metal::Metal;
 use ray::Ray;
 use sphere::Sphere;
 use vec3::{Color, Point3, Vec3};
 
 mod camera;
 mod hittable;
+mod lambertian;
+mod material;
 mod math;
+mod metal;
 mod print;
 mod ray;
 mod sphere;
@@ -20,9 +25,11 @@ fn ray_color<T: Hittable>(r: &ray::Ray, world: &T, depth: i32) -> Color {
     }
 
     if let Some(rec) = world.hit(r, 0.001, INFINITY) {
-        let target = rec.p + rec.normal + Vec3::random_unit_vector();
+        if let Some(scattered) = rec.material.scatter(r, &rec) {
+            return scattered.attenuation * ray_color(&scattered.scattered, world, depth - 1);
+        }
 
-        return ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1) * 0.5;
+        return Color::new(0.0, 0.0, 0.0);
     }
 
     let unit_direction = r.direction().unit_vector();
@@ -41,8 +48,26 @@ fn main() {
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     let mut world: HittableList = HittableList::default();
-    world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
-    world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0.0, 0.0, -1.0),
+        0.5,
+        Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3))),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0.0, -100.5, -1.0),
+        100.0,
+        Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0))),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(1.0, 0.0, -1.0),
+        0.5,
+        Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2))),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        0.5,
+        Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8))),
+    )));
 
     let cam = camera::Camera::default();
 
