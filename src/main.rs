@@ -1,4 +1,4 @@
-use std::{f64::INFINITY, rc::Rc};
+use std::{f64::INFINITY, rc::Rc, time::Instant};
 
 use camera::Camera;
 use dielectric::Dielectric;
@@ -113,6 +113,8 @@ fn main() {
 
     let cam = Camera::new(lookfrom, lookat, vup, 20.0, ASPECT_RATIO, aperture, dist_to_focus);
 
+    let start = Instant::now();
+
     for j in (0..IMAGE_HEIGHT).rev() {
         eprintln!("\rScanlines remaining: {}", j);
         for i in 0..IMAGE_WIDTH {
@@ -126,5 +128,6 @@ fn main() {
             print::write_color(pixel_color, SAMPLES_PER_PIXEL);
         }
     }
-    eprintln!("\nDone.\n");
+    let duration = start.elapsed();
+    eprintln!("\nDone. Duration: {:?}s", duration.as_secs());
 }
