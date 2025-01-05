@@ -1,4 +1,7 @@
-use std::{f64::INFINITY, rc::Rc};
+use std::{
+    f64::{consts::PI, INFINITY},
+    rc::Rc,
+};
 
 use dielectric::Dielectric;
 use hittable::{Hittable, HittableList};
@@ -6,7 +9,7 @@ use lambertian::Lambertian;
 use math::random_double;
 use metal::Metal;
 use sphere::Sphere;
-use vec3::{Color, Point3};
+use vec3::{Color, Point3, Vec3};
 
 mod camera;
 mod dielectric;
@@ -79,7 +82,13 @@ fn main() {
         Rc::new(Dielectric::new(1.5)),
     )));
 
-    let cam = camera::Camera::default();
+    let cam = camera::Camera::new(
+        Point3::new(-2.0, 2.0, 1.0),
+        Point3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        20.0,
+        ASPECT_RATIO,
+    );
 
     for j in (0..IMAGE_HEIGHT).rev() {
         eprintln!("\rScanlines remaining: {}", j);
