@@ -1,5 +1,6 @@
 use std::{f64::INFINITY, rc::Rc};
 
+use dielectric::Dielectric;
 use hittable::{Hittable, HittableList};
 use lambertian::Lambertian;
 use math::random_double;
@@ -8,6 +9,7 @@ use sphere::Sphere;
 use vec3::{Color, Point3};
 
 mod camera;
+mod dielectric;
 mod hittable;
 mod lambertian;
 mod material;
@@ -47,25 +49,34 @@ fn main() {
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     let mut world: HittableList = HittableList::default();
-    world.add(Box::new(Sphere::new(
-        Point3::new(0.0, 0.0, -1.0),
-        0.5,
-        Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3))),
-    )));
+    // ground
     world.add(Box::new(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
         100.0,
         Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0))),
     )));
+    // center
+    world.add(Box::new(Sphere::new(
+        Point3::new(0.0, 0.0, -1.0),
+        0.5,
+        Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3))),
+    )));
+    // right
     world.add(Box::new(Sphere::new(
         Point3::new(1.0, 0.0, -1.0),
         0.5,
-        Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0)),
+        Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0)),
     )));
+    // left
     world.add(Box::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
-        Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3)),
+        Rc::new(Dielectric::new(1.5)),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        -0.45,
+        Rc::new(Dielectric::new(1.5)),
     )));
 
     let cam = camera::Camera::default();

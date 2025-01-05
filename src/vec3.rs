@@ -56,6 +56,14 @@ impl Vec3 {
         *self - n * self.dot(n) * 2.0
     }
 
+    pub fn reflact(&self, n: Self, etai_over_etat: f64) -> Self {
+        let cos_theta = (-*self).dot(n);
+        let r_out_paralell = (*self + n * cos_theta) * etai_over_etat;
+        let r_out_perp = n * -(1.0 - r_out_paralell.length_squared()).sqrt();
+
+        r_out_paralell + r_out_perp
+    }
+
     fn random() -> Self {
         Self::new(random_double(), random_double(), random_double())
     }
@@ -90,7 +98,7 @@ impl Neg for Vec3 {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self::new(self.e[0], self.e[1], self.e[2])
+        Self::new(-self.e[0], -self.e[1], -self.e[2])
     }
 }
 
