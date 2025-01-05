@@ -64,11 +64,11 @@ impl Vec3 {
         r_out_paralell + r_out_perp
     }
 
-    fn random() -> Self {
+    pub fn random() -> Self {
         Self::new(random_double(), random_double(), random_double())
     }
 
-    fn random_range(min: f64, max: f64) -> Self {
+    pub fn random_range(min: f64, max: f64) -> Self {
         Self::new(
             random_double_range(min, max),
             random_double_range(min, max),

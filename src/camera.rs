@@ -12,7 +12,6 @@ pub struct Camera {
     lens_radius: f64,
     u: Vec3,
     v: Vec3,
-    w: Vec3,
 }
 
 impl Camera {
@@ -35,7 +34,6 @@ impl Camera {
             lens_radius: 0.0,
             u: Vec3::default(),
             v: Vec3::default(),
-            w: Vec3::default(),
         }
     }
 
@@ -71,7 +69,6 @@ impl Camera {
             lens_radius,
             u,
             v,
-            w,
         }
     }
 
