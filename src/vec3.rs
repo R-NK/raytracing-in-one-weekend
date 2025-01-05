@@ -84,6 +84,16 @@ impl Vec3 {
             }
         }
     }
+    pub fn random_in_unit_disk() -> Self {
+        loop {
+            let p = Self::new(random_double_range(-1.0, 1.0), random_double_range(-1.0, 1.0), 0.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+
+            return p;
+        }
+    }
 
     pub fn random_unit_vector() -> Self {
         let a = random_double_range(0.0, 2.0 * std::f64::consts::PI);

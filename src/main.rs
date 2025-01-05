@@ -3,6 +3,7 @@ use std::{
     rc::Rc,
 };
 
+use camera::Camera;
 use dielectric::Dielectric;
 use hittable::{Hittable, HittableList};
 use lambertian::Lambertian;
@@ -82,13 +83,13 @@ fn main() {
         Rc::new(Dielectric::new(1.5)),
     )));
 
-    let cam = camera::Camera::new(
-        Point3::new(-2.0, 2.0, 1.0),
-        Point3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
-        20.0,
-        ASPECT_RATIO,
-    );
+    let lookfrom = Point3::new(3.0, 3.0, 2.0);
+    let lookat = Point3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let dist_to_focus = (lookfrom - lookat).length();
+    let aperture = 2.0;
+
+    let cam = Camera::new(lookfrom, lookat, vup, 20.0, ASPECT_RATIO, aperture, dist_to_focus);
 
     for j in (0..IMAGE_HEIGHT).rev() {
         eprintln!("\rScanlines remaining: {}", j);
