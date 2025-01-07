@@ -19,10 +19,11 @@ mod math;
 mod metal;
 mod print;
 mod ray;
+mod renderer;
 mod sphere;
 mod vec3;
 
-fn ray_color<T: Hittable>(r: &ray::Ray, world: &T, depth: i32) -> Color {
+fn ray_color<T: Hittable>(r: &ray::Ray, world: &T, depth: u16) -> Color {
     if depth <= 0 {
         return Color::new(0.0, 0.0, 0.0);
     }
@@ -96,10 +97,10 @@ fn random_scene() -> HittableList {
 
 fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
-    const IMAGE_WIDTH: i16 = 768;
-    const IMAGE_HEIGHT: i16 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i16;
-    const SAMPLES_PER_PIXEL: i32 = 10;
-    const MAX_DEPTH: i32 = 50;
+    const IMAGE_WIDTH: u16 = 768;
+    const IMAGE_HEIGHT: u16 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as u16;
+    const SAMPLES_PER_PIXEL: u16 = 10;
+    const MAX_DEPTH: u16 = 50;
 
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
 

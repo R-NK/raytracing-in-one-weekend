@@ -1,6 +1,6 @@
 use crate::vec3::Color;
 
-pub fn write_color(pixel_color: Color, samples_per_pixel: i32) {
+pub fn write_color(pixel_color: Color, samples_per_pixel: u16) {
     let mut r = pixel_color.x();
     let mut g = pixel_color.y();
     let mut b = pixel_color.z();
