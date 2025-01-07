@@ -1,5 +1,5 @@
 use crate::{
-    material::{Material, Scattered},
+    material::Material,
     ray::Ray,
     vec3::{Color, Vec3},
 };
@@ -16,13 +16,13 @@ impl Metal {
 }
 
 impl Material for Metal {
-    fn scatter(&self, r_in: &crate::ray::Ray, rec: &crate::hittable::HitRecord) -> Option<Scattered> {
+    fn scatter(&self, r_in: &crate::ray::Ray, rec: &crate::hittable::HitRecord) -> Option<(Ray, Color)> {
         let reflected = r_in.direction().unit_vector().reflect(rec.normal);
         let scattered = Ray::new(rec.p, reflected + Vec3::random_in_unit_sphere() * self.fuzz);
         let attenuation = self.albedo;
 
         if scattered.direction().dot(rec.normal) > 0.0 {
-            return Some(Scattered { scattered, attenuation });
+            return Some((scattered, attenuation));
         } else {
             return None;
         }

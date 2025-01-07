@@ -29,7 +29,7 @@ fn ray_color<T: Hittable>(r: &ray::Ray, world: &T, depth: i32) -> Color {
 
     if let Some(rec) = world.hit(r, 0.001, INFINITY) {
         if let Some(scattered) = rec.material.scatter(r, &rec) {
-            return scattered.attenuation * ray_color(&scattered.scattered, world, depth - 1);
+            return scattered.1 * ray_color(&scattered.0, world, depth - 1);
         }
 
         return Color::new(0.0, 0.0, 0.0);
@@ -98,7 +98,7 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i16 = 768;
     const IMAGE_HEIGHT: i16 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i16;
-    const SAMPLES_PER_PIXEL: i32 = 100;
+    const SAMPLES_PER_PIXEL: i32 = 10;
     const MAX_DEPTH: i32 = 50;
 
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);

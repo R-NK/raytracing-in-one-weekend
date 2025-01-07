@@ -1,5 +1,5 @@
 use crate::{
-    material::{Material, Scattered},
+    material::Material,
     math::{random_double, schlick},
     ray::Ray,
     vec3::Color,
@@ -16,7 +16,7 @@ impl Dielectric {
 }
 
 impl Material for Dielectric {
-    fn scatter(&self, r_in: &crate::ray::Ray, rec: &crate::hittable::HitRecord) -> Option<Scattered> {
+    fn scatter(&self, r_in: &crate::ray::Ray, rec: &crate::hittable::HitRecord) -> Option<(Ray, Color)> {
         let attenuation = Color::new(1.0, 1.0, 1.0);
         let etai_over_etat = if rec.front_face {
             1.0 / self.ref_idx
@@ -31,7 +31,7 @@ impl Material for Dielectric {
             let reflected = unit_direction.reflect(rec.normal);
             let scattered = Ray::new(rec.p, reflected);
 
-            return Some(Scattered { scattered, attenuation });
+            return Some((scattered, attenuation));
         }
 
         let reflect_prob = schlick(cos_theta, etai_over_etat);
@@ -39,12 +39,12 @@ impl Material for Dielectric {
             let reflected = unit_direction.reflect(rec.normal);
             let scattered = Ray::new(rec.p, reflected);
 
-            return Some(Scattered { scattered, attenuation });
+            return Some((scattered, attenuation));
         }
 
         let refracted = unit_direction.reflact(rec.normal, etai_over_etat);
         let scattered = Ray::new(rec.p, refracted);
 
-        Some(Scattered { scattered, attenuation })
+        Some((scattered, attenuation))
     }
 }

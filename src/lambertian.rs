@@ -1,6 +1,6 @@
 use crate::{
     hittable::HitRecord,
-    material::{Material, Scattered},
+    material::Material,
     ray::Ray,
     vec3::{Color, Vec3},
 };
@@ -16,11 +16,11 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<Scattered> {
+    fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<(Ray, Color)> {
         let scatter_direction = rec.normal + Vec3::random_unit_vector();
         let scattered = Ray::new(rec.p, scatter_direction);
         let attenuation = self.albedo;
 
-        return Some(Scattered { scattered, attenuation });
+        return Some((scattered, attenuation));
     }
 }
